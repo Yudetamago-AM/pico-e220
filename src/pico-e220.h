@@ -28,4 +28,9 @@ void lora_init(uart_inst_t *uart, e220_pin_t *pin);
 bool lora_mode(e220_pin_t *pin, int8_t mode);
 void lora_config(uart_inst_t *uart, e220_config_t *config, e220_pin_t *pin);
 void lora_send(uart_inst_t *uart, uint8_t *src, int8_t len);
+
+/// @brief wait until receive some data
+/// @param uart 
+/// @param dst 
+/// @return 
 uint16_t lora_receive(uart_inst_t *uart, uint8_t *dst);

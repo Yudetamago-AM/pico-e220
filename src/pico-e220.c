@@ -299,7 +299,8 @@ void lora_send(uart_inst_t *uart, uint8_t *src, int8_t len) {
     uart_putc(uart, target & 0xff);
     uart_putc(uart, chan);
 #endif
-    for (int8_t i = 0; i < len; i++) uart_puts(uart, &src[i]);
+    //for (int8_t i = 0; i < len; i++) uart_puts(uart, &src[i]);
+    uart_write_blocking(uart, src, len);
 #ifdef NDEBUG
     printf("send:\n");
     for (int8_t i = 0; i < len; i++) printf("%c", src[i]);
@@ -310,18 +311,33 @@ void lora_send(uart_inst_t *uart, uint8_t *src, int8_t len) {
 uint16_t lora_receive(uart_inst_t *uart, uint8_t *dst) {
     //printf("recieve: \n");
     uint16_t i = 0;
-    while (uart_is_readable(uart)) {
-        //printf("receive!");
-        //uart_read_blocking(uart, &dst[i], 1);
-        dst[i] = uart_getc(uart);
-#ifdef NDEBUG
-        printf("%c", dst[i]);
-#endif
-        i++;
+    static bool isfirst = true;
+    
+    // clear buffer
+    if (isfirst) {
+        isfirst = false;
+        while (uart_is_readable(uart)) {
+            uint8_t c = uart_getc(uart);
+            printf("%c", c);
+        }
+        printf("\n");
     }
     
+#if 0
+    // wait for new packet
+    while (uart_is_readable(uart) == 0) {
+        sleep_ms(1);
+    }
+    
+    // receive packet
+    while (uart_is_readable(uart)) {
+        dst[i] = uart_getc(uart);
+        i++;
+    }
     //for (int8_t j = 0; j < i; j++) printf("%c", dst[i]);
     //printf("\n");
+#endif
 
-    return i;
+    uart_read_blocking(uart, dst, 32);
+    return 32;
 }

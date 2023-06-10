@@ -31,7 +31,10 @@ int main(void) {
 
     stdio_init_all();
     sleep_ms(2000);
-    printf("hello, this is parent.\nrc car controller\n");
+    printf("hello, this is store-and-forward\n");
+    printf("data: ");
+    for (int i = 0; i < 32; i++) printf("%c ", sbuf[i]);
+    printf("\n");
 
     lora_init(uart0, &lora_pin);
     lora_config(uart0, &lora_cfg, &lora_pin);
@@ -40,12 +43,13 @@ int main(void) {
         for (int i = 0; i < 100; i++) rsv[i] = '0';
         lora_send(uart0, sbuf, 32);
         printf("send: ");
-        for (int i = 0; i < 32; i++) printf("%c ");
+        for (int i = 0; i < 32; i++) printf("%c ", sbuf[i]);
         printf("\n");
+        sleep_ms(500);
 
         lora_receive(uart0, rsv);
         printf("receive: ");
-        for (int i = 0; i < 100; i++) printf("%c ");
+        for (int i = 0; i < 32; i++) printf("%c ", rsv[i]);
         printf("\n");
 
         sleep_ms(1000);
