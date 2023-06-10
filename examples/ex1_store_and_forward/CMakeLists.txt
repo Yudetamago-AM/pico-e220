@@ -1,6 +1,6 @@
 add_executable(ex1_store_and_forward ex1_store_and_forward.c)
 
-target_link_libraries(ex1_store_and_forward pico_stdlib hardware_uart pico_e220)
+target_link_libraries(ex1_store_and_forward pico_stdlib hardware_uart hardware_rtc pico_e220)
 
 pico_enable_stdio_usb(ex1_store_and_forward 1)
 pico_enable_stdio_uart(ex1_store_and_forward 0)
